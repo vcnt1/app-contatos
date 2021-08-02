@@ -73,10 +73,7 @@ class Repository {
     }
 
     updateState();
-
-    if (globals.currentUser.rememberMe == true) {
-      sp.setString('logged_user', json.encode(globals.currentUser));
-    }
+    sp.setString('logged_user', json.encode(globals.currentUser));
 
     await Future.delayed(Duration(seconds: 2), () {});
     return true;

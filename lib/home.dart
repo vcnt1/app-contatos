@@ -60,7 +60,14 @@ class AppBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(),
+        Text(
+          'Olá, ${globals.currentUser.login}',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: globals.mainColor,
+          ),
+        ),
         GestureDetector(
           onTap: () {
             showModalBottomSheet<void>(
@@ -73,7 +80,10 @@ class AppBar extends StatelessWidget {
             );
           },
           child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 40, 0, 30),
+            height: 80,
+            width: 40,
+            margin: EdgeInsets.symmetric(vertical: 10),
+            alignment: Alignment.centerRight,
             child: Icon(
               Icons.settings,
               color: globals.mainColor,
@@ -104,7 +114,7 @@ class _SelectedContactsListState extends State<SelectedContactsList> {
     final permitted = await Permission.phone.request().isGranted;
     final url = "tel:$phoneNumber";
 
-    if(permitted){
+    if (permitted) {
       FlutterPhoneDirectCaller.callNumber(phoneNumber);
     } else {
       if (await canLaunch(url)) {
@@ -126,7 +136,7 @@ class _SelectedContactsListState extends State<SelectedContactsList> {
             children: [
               Center(
                 child: Text(
-                  emptyContacts ? '0 CONTATOS' : 'CLIQUE PARA LIGAR !',
+                  emptyContacts ? 'NENHUM CONTATO' : 'CLIQUE PARA LIGAR !',
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: globals.mainColor),
@@ -149,17 +159,14 @@ class _SelectedContactsListState extends State<SelectedContactsList> {
                             onTap: () async => await _launchCaller(e.phone),
                             child: Container(
                               width: (MediaQuery.of(context).size.width - 40 - 10) * .5,
-                              decoration: BoxDecoration(
-                                color: globals.mainColorMaterial[random * 100],
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.15),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ]
-                              ),
+                              decoration:
+                                  BoxDecoration(color: globals.mainColorMaterial[random * 100], borderRadius: BorderRadius.circular(10), boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.15),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ]),
                               padding: const EdgeInsets.symmetric(vertical: 30),
                               child: Center(
                                 child: Text(

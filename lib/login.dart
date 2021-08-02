@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
           behavior: HitTestBehavior.translucent,
           child: Column(
             children: [
-              SizedBox(height: 100),
+              SizedBox(height: MediaQuery.of(context).viewPadding.bottom > 0 ? 50 : 100),
               Container(
                 width: MediaQuery.of(context).size.width * .7,
                 padding: EdgeInsets.all(20),
@@ -125,7 +125,8 @@ class _LoginState extends State<Login> {
                         child: FutureBuilder(
                           future: logInFuture,
                           builder: (context, snapshot) {
-                            isLoading = snapshot.connectionState == ConnectionState.waiting;
+                            bool isValid = loginController.text.isNotEmpty && passwordController.text.isNotEmpty;
+                            isLoading = snapshot.connectionState != ConnectionState.done;
 
                             if (fixDuplicate && !isLoading && snapshot.hasData && snapshot.data) {
                               fixDuplicate = false;
@@ -137,15 +138,18 @@ class _LoginState extends State<Login> {
                               });
                             }
 
-                            return isLoading
-                                ? SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(globals.mainColor,)),
-                                  )
-                                : Icon(
+                            return !isLoading && fixDuplicate
+                                ? Icon(
                                     Icons.keyboard_arrow_right,
                                     color: globals.mainColor,
+                                  )
+                                : SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                      globals.mainColor,
+                                    )),
                                   );
                           },
                         ),

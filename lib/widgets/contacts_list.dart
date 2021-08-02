@@ -1,6 +1,5 @@
 import 'package:app_contatos/globals.dart';
 import 'package:app_contatos/models/user.dart';
-import 'package:app_contatos/repository.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,10 +21,6 @@ class _ContactsListState extends State<ContactsList> {
         permissionFuture = Permission.contacts.request().isGranted;
       });
 
-  Future<void> getContracts() async => setState(() {
-    contactsFuture = ContactsService.getContacts();
-  });
-
   @override
   void initState() {
     super.initState();
@@ -35,29 +30,30 @@ class _ContactsListState extends State<ContactsList> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: currentUserNotifier,
-      builder: (context, User value, widget) {
-        List<String> addedContacts = value.contacts == null ? <String>[] : value.contacts.map<String>((e) => e.phone).toList();
+    return FutureBuilder(
+      future: permissionFuture,
+      builder: (context, snapshot) {
+        bool requesting = snapshot.connectionState != ConnectionState.done;
+        accessContactsPermitted = snapshot.data ?? false;
 
-        return FutureBuilder(
-          future: permissionFuture,
-          builder: (context, snapshot) {
-            bool requesting = snapshot.connectionState != ConnectionState.done;
-            accessContactsPermitted = snapshot.data ?? false;
+        if (accessContactsPermitted) {
+          contactsFuture = ContactsService.getContacts();
+        }
 
-            if(accessContactsPermitted){
-              getContracts();
-            }
+        return requesting
+            ? Container()
+            : accessContactsPermitted
+                ? FutureBuilder(
+                    future: contactsFuture,
+                    builder: (context, snapshot) {
+                      bool canShow = snapshot.connectionState == ConnectionState.done && snapshot.hasData;
+                      List<Contact> contacts = snapshot.hasData ? List<Contact>.from(snapshot.data) : [];
 
-            return requesting
-                ? Container()
-                : accessContactsPermitted
-                    ? FutureBuilder(
-                        future: accessContactsPermitted ? contactsFuture : Future.value(false),
-                        builder: (context, snapshot) {
-                          bool canShow = snapshot.connectionState == ConnectionState.done && snapshot.hasData;
-                          List<Contact> contacts = snapshot.hasData ? List<Contact>.from(snapshot.data) : [];
+                      return ValueListenableBuilder(
+                        valueListenable: currentUserNotifier,
+                        builder: (context, User value, widget) {
+                          List<String> addedContacts =
+                              globals.currentUser.contacts == null ? <String>[] : globals.currentUser.contacts.map<String>((e) => e.phone).toList();
 
                           List<Widget> items = canShow
                               ? contacts.map((Contact e) {
@@ -145,27 +141,29 @@ class _ContactsListState extends State<ContactsList> {
                                   );
                                 }).toList()
                               : [1, 2, 3, 4, 5, 6]
-                                  .map((e) => Container(
-                                        margin: const EdgeInsets.only(top: 20),
-                                        height: 50,
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              flex: 5,
-                                              child: Container(
-                                                color: Colors.grey[200],
-                                              ),
+                                  .map(
+                                    (e) => Container(
+                                      margin: const EdgeInsets.only(top: 20),
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            flex: 5,
+                                            child: Container(
+                                              color: Colors.grey[200],
                                             ),
-                                            SizedBox(width: 20),
-                                            Flexible(
-                                              flex: 2,
-                                              child: Container(
-                                                color: Colors.grey[200],
-                                              ),
+                                          ),
+                                          SizedBox(width: 20),
+                                          Flexible(
+                                            flex: 2,
+                                            child: Container(
+                                              color: Colors.grey[200],
                                             ),
-                                          ],
-                                        ),
-                                      ))
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
                                   .toList();
 
                           return ListView(
@@ -174,25 +172,29 @@ class _ContactsListState extends State<ContactsList> {
                             children: items,
                           );
                         },
-                      )
-                    : GestureDetector(
-                        onTap: () => getPermission(),
-                        child: Container(
-                          margin: EdgeInsets.only(top: 20),
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(
-                              color: globals.mainColor,
-                            ),
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Center(child: Text('Permitir o acesso ao seus contatos.', style: TextStyle(color: globals.mainColor),)),
-                        ),
                       );
-          },
-        );
+                    },
+                  )
+                : GestureDetector(
+                    onTap: () => getPermission(),
+                    child: Container(
+                      margin: EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(
+                          color: globals.mainColor,
+                        ),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Center(
+                          child: Text(
+                        'Permitir o acesso ao seus contatos.',
+                        style: TextStyle(color: globals.mainColor),
+                      )),
+                    ),
+                  );
       },
     );
   }
