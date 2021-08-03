@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
           behavior: HitTestBehavior.translucent,
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).viewPadding.bottom > 0 ? 50 : 100),
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 30 : 100),
               Container(
                 width: MediaQuery.of(context).size.width * .7,
                 padding: EdgeInsets.all(20),
@@ -85,7 +85,8 @@ class _LoginState extends State<Login> {
               SizedBox(height: 40),
               GestureDetector(
                 onTap: () {
-                  if (!isLoading) {
+                  bool isValid = loginController.text.isNotEmpty && passwordController.text.isNotEmpty;
+                  if (!isLoading && isValid) {
                     doLogin();
                   }
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -125,7 +126,6 @@ class _LoginState extends State<Login> {
                         child: FutureBuilder(
                           future: logInFuture,
                           builder: (context, snapshot) {
-                            bool isValid = loginController.text.isNotEmpty && passwordController.text.isNotEmpty;
                             isLoading = snapshot.connectionState != ConnectionState.done;
 
                             if (fixDuplicate && !isLoading && snapshot.hasData && snapshot.data) {

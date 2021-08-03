@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android.iml" filepath="$PROJECT_DIR$/.idea/modules/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/982965435/android.contacts_service.iml" filepath="$PROJECT_DIR$/.idea/modules/982965435/android.contacts_service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-634547851/android.flutter_phone_direct_caller.iml" filepath="$PROJECT_DIR$/.idea/modules/-634547851/android.flutter_phone_direct_caller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-324979857/android.permission_handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-324979857/android.permission_handler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-78037361/android.shared_preferences.iml" filepath="$PROJECT_DIR$/.idea/modules/-78037361/android.shared_preferences.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1948043051/android.url_launcher.iml" filepath="$PROJECT_DIR$/.idea/modules/1948043051/android.url_launcher.iml" />
+    </modules>
+  </component>
+</project>

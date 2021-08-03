@@ -38,7 +38,7 @@ class _SettingsState extends State<Settings> {
                   valueListenable: rememberMeNotifier,
                   builder: (context, bool value, widget) => SwitchListTile(
                     title: Text(
-                      'Permanecer conectadx',
+                      'Permanecer conectado',
                       style: TextStyle(fontWeight: FontWeight.w400),
                     ),
                     activeColor: globals.mainColor,
